@@ -18,8 +18,8 @@ export interface Balance {
     amount: number;
 }
 
-export interface BalanceResponse {
-    balance: Balance[];
+export interface BalancesResponse {
+    balances: Balance[];
 }
 
 export interface Wallet {
@@ -36,7 +36,7 @@ export interface transaction {
     createdAt: string;
 }
 
-export interface TransactionResponse {
+export interface TransactionsResponse {
     transactions: transaction[];
 }
 
