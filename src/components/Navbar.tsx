@@ -12,12 +12,14 @@ export function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between border-b px-6 py-4">
-      <span className="text-lg font-semibold text-gray-800">NomadWallet</span>
+    <nav className="flex items-center justify-between border-b border-slate/15 px-6 py-4">
+      <span className="font-mono text-lg font-semibold tracking-wide text-bone">
+        NomadWallet
+      </span>
 
       {isAuthenticated && (
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600">{user?.email}</span>
+          <span className="text-sm text-slate">{user?.email}</span>
           <Button variant="secondary" onClick={handleLogout}>
             Cerrar sesión
           </Button>

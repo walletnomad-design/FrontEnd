@@ -16,26 +16,21 @@ export function Login() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     const errors = validateLoginForm(email, password);
     setFormErrors(errors);
-
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+    if (Object.keys(errors).length > 0) return;
 
     try {
       await login({ email, password });
       navigate("/dashboard");
     } catch {
-      // El error ya queda guardado en el contexto (AuthContext.error)
-      // y se muestra abajo con <ErrorMessage />. No hace falta nada más acá.
+      // El error ya se muestra vía AuthContext.error
     }
   };
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-12">
-      <h1 className="text-2xl font-bold text-gray-900">Iniciar sesión</h1>
+    <div className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-16 animate-rise">
+      <h1 className="text-2xl font-bold text-bone">Iniciar sesión</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <Input
@@ -62,9 +57,9 @@ export function Login() {
         </Button>
       </form>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-slate">
         ¿No tenés cuenta?{" "}
-        <Link to="/register" className="font-medium text-blue-600 hover:underline">
+        <Link to="/register" className="font-medium text-amber hover:underline">
           Registrate
         </Link>
       </p>
