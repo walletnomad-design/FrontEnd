@@ -22,25 +22,17 @@ export function Dashboard() {
       setError(null);
       try {
         const res = await walletApi.getBalances();
-        if (!cancelled) {
-          setBalances(res.balances);
-        }
+        if (!cancelled) setBalances(res.balances);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : "No se pudieron cargar los balances");
         }
       } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
+        if (!cancelled) setIsLoading(false);
       }
     }
 
     loadBalances();
-
-    // Cleanup: si el componente se desmonta antes de que responda el fetch
-    // (ej. el usuario navega rápido a otra pantalla), evita el clásico warning
-    // de React "no se puede actualizar el estado de un componente desmontado".
     return () => {
       cancelled = true;
     };
@@ -51,10 +43,10 @@ export function Dashboard() {
       <Navbar />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="mb-1 text-2xl font-bold text-gray-900">
+        <h1 className="mb-1 text-2xl font-bold text-bone animate-rise">
           Hola, {user?.email}
         </h1>
-        <p className="mb-6 text-gray-600">Tu wallet</p>
+        <p className="mb-6 text-slate animate-rise">Tu wallet</p>
 
         {isLoading && <Loader label="Cargando balances..." />}
 
@@ -62,8 +54,14 @@ export function Dashboard() {
 
         {!isLoading && !error && balances && (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {balances.map((balance) => (
-              <BalanceCard key={balance.currency} balance={balance} />
+            {balances.map((balance, i) => (
+              <div
+                key={balance.currency}
+                className="animate-rise"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <BalanceCard balance={balance} />
+              </div>
             ))}
           </div>
         )}

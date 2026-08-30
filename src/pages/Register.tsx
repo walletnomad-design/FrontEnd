@@ -16,25 +16,21 @@ export function Register() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     const errors = validateLoginForm(email, password);
     setFormErrors(errors);
-
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+    if (Object.keys(errors).length > 0) return;
 
     try {
       await register({ email, password });
       navigate("/dashboard");
     } catch {
-      // El error ya queda guardado en AuthContext.error y se muestra abajo.
+      // El error ya se muestra vía AuthContext.error
     }
   };
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-12">
-      <h1 className="text-2xl font-bold text-gray-900">Crear cuenta</h1>
+    <div className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-16 animate-rise">
+      <h1 className="text-2xl font-bold text-bone">Crear cuenta</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <Input
@@ -61,9 +57,9 @@ export function Register() {
         </Button>
       </form>
 
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-slate">
         ¿Ya tenés cuenta?{" "}
-        <Link to="/login" className="font-medium text-blue-600 hover:underline">
+        <Link to="/login" className="font-medium text-amber hover:underline">
           Iniciá sesión
         </Link>
       </p>
