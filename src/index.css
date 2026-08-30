@@ -1,10 +1,88 @@
 @import "tailwindcss";
 
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+@theme {
+  /* Paleta — Exchange Board */
+  --color-navy: #0e1b33;
+  --color-navy-card: #152847;
+  --color-navy-card-hover: #1b3155;
+  --color-amber: #f0a537;
+  --color-amber-dim: #b97e26;
+  --color-mint: #2dd4a7;
+  --color-bone: #f5f3ee;
+  --color-slate: #8b96ac;
+
+  /* Tipografía */
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Curva de animación consistente en toda la app */
+  --ease-board: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--color-navy);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+}
+
+/* Respeta a usuarios que piden menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* Animación de entrada reutilizable para tarjetas/secciones */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.5s var(--ease-board) both;
+}
+
+/* Cinta de cotizaciones en movimiento infinito */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker-scroll 60s linear infinite;
+}
+
+.animate-ticker-reverse {
+  animation: ticker-scroll 75s linear infinite reverse;
+}
+
+/* Resplandor ambiental que respira lentamente detrás del contenido */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.animate-glow {
+  animation: glow-pulse 6s ease-in-out infinite;
 }
