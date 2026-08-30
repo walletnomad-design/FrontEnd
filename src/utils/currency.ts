@@ -16,6 +16,7 @@ const CURRENCY_LOCALE: Record<Currency, string> = {
 export function formatAmount(amount: number, currency: Currency): string {
     return new Intl.NumberFormat(CURRENCY_LOCALE[currency], {
         style: "currency",
+        currency: currency,
         minimumFractionDigits: currency === "COP" ? 0 : 2,
         maximumFractionDigits: currency === "COP" ? 0 : 2,
     }).format(amount);
