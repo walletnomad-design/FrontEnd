@@ -11,21 +11,31 @@ export function Button({
   variant = "primary",
   isLoading = false,
   disabled,
+  className = "",
   ...rest
 }: ButtonProps) {
-const baseStyles = "px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
-  const variantStyles =
-    variant === "primary"
-      ? "bg-blue-600 text-white hover:bg-blue-700"
-      : "bg-gray-200 text-gray-800 hover:bg-gray-300";
+  const base =
+    "relative px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ease-[var(--ease-board)] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97]";
+
+  const variants = {
+    primary:
+      "bg-amber text-navy hover:bg-amber-dim hover:shadow-[0_0_0_3px_rgba(240,165,55,0.25)]",
+    secondary:
+      "bg-transparent text-bone border border-slate/30 hover:border-slate/60 hover:bg-white/5",
+  };
 
   return (
     <button
-      className={`${baseStyles} ${variantStyles}`}
+      className={`${base} ${variants[variant]} ${className}`}
       disabled={disabled || isLoading}
       {...rest}
     >
-      {isLoading ? "Cargando..." : children}
+      <span className={isLoading ? "opacity-0" : "opacity-100"}>{children}</span>
+      {isLoading && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-navy/30 border-t-navy" />
+        </span>
+      )}
     </button>
   );
 }
