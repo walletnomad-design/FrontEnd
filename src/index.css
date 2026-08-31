@@ -86,3 +86,39 @@ body {
 .animate-glow {
   animation: glow-pulse 6s ease-in-out infinite;
 }
+
+/* Línea escáner que recorre la tarjeta de saldo */
+@keyframes scan-sweep {
+  0% {
+    left: -40%;
+  }
+  60%, 100% {
+    left: 130%;
+  }
+}
+
+.animate-scan {
+  animation: scan-sweep 5.5s var(--ease-board) infinite;
+}
+
+/* Brillo que recorre la barra de progreso rellena */
+@keyframes shine-sweep {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+.animate-shine {
+  animation: shine-sweep 2.6s linear infinite;
+}
+
+/* Halo giratorio lento detrás de paneles destacados */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 9s linear infinite reverse;
+}

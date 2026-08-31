@@ -6,6 +6,7 @@ import { ErrorMessage } from "../components/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
 import * as walletApi from "../services/walletApi";
 import type { Balance } from "../types";
+import { GoalProgress } from "../components/GoalProgress";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -53,8 +54,7 @@ export function Dashboard() {
         <ErrorMessage message={error} />
 
         {!isLoading && !error && balances && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {balances.map((balance, i) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">            {balances.map((balance, i) => (
               <div
                 key={balance.currency}
                 className="animate-rise"
@@ -65,6 +65,13 @@ export function Dashboard() {
             ))}
           </div>
         )}
+
+        <GoalProgress
+          label="Meta: Fondo de viaje"
+          current={650}
+          target={1000}
+          currency="USD"
+        />
       </main>
     </div>
   );
