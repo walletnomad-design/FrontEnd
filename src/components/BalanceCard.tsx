@@ -13,8 +13,6 @@ const CURRENCY_ACCENT: Record<Balance["currency"], string> = {
 };
 
 export function BalanceCard({ balance }: BalanceCardProps) {
-  // Dispara la animación de "flip" cada vez que cambia el monto
-  // (útil cuando en el futuro los balances se actualicen en vivo).
   const [flipKey, setFlipKey] = useState(0);
 
   useEffect(() => {
@@ -23,10 +21,12 @@ export function BalanceCard({ balance }: BalanceCardProps) {
 
   return (
     <div className="group relative overflow-hidden rounded-xl border border-slate/15 bg-navy-card p-5 transition-all duration-300 ease-[var(--ease-board)] hover:-translate-y-0.5 hover:border-slate/30 hover:bg-navy-card-hover">
-      {/* Barra de acento lateral, color distinto por moneda */}
       <span
         className={`absolute left-0 top-0 h-full w-1 ${CURRENCY_ACCENT[balance.currency]}`}
       />
+
+      {/* Línea escáner: brillo diagonal que recorre la tarjeta en loop */}
+      <span className="pointer-events-none absolute inset-y-0 left-[-40%] w-1/4 -skew-x-[18deg] bg-gradient-to-r from-transparent via-amber/10 to-transparent animate-scan" />
 
       <div className="flex items-center justify-between">
         <span className="rounded-md bg-white/5 px-2 py-1 font-mono text-xs font-semibold tracking-widest text-slate">
@@ -34,11 +34,10 @@ export function BalanceCard({ balance }: BalanceCardProps) {
         </span>
       </div>
 
-      {/* Línea divisoria que simula el pliegue del panel split-flap */}
       <div className="relative mt-3">
         <span
           key={flipKey}
-          className="block font-mono text-3xl font-semibold tabular-nums text-bone animate-rise"
+          className="block font-mono text-2xl font-semibold tabular-nums text-bone animate-rise sm:text-3xl"
         >
           {formatAmount(balance.amount, balance.currency)}
         </span>
