@@ -2,7 +2,7 @@ import { apiRequest, setAuthToken } from "./httpClient";
 import type { AuthResponse, LoginPayload, RegisterPayload } from "../types";
 
 // 🔧 Cambiar a false cuando P3 tenga /api/auth/register y /api/auth/login reales.
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 const MOCK_DELAY_MS = 500;
 
