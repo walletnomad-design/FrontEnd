@@ -12,7 +12,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between border-b border-slate/15 px-6 py-4">
+    <nav className="sticky top-0 z-10 flex items-center justify-between border-b border-slate/15 bg-navy/70 px-6 py-4 backdrop-blur-md">
       <span className="font-mono text-lg font-semibold tracking-wide text-bone">
         NomadWallet
       </span>
