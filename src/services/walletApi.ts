@@ -1,7 +1,7 @@
 import { apiRequest } from "./httpClient";
 import type { BalancesResponse, TransactionsResponse, Wallet } from "../types";
 
-const USE_MOCK = true;
+const USE_MOCK = false; // Cambiar a true para usar datos simulados en lugar de la API real
 const MOCK_DELAY_MS = 400;
 
 export async function getWallet(): Promise<Wallet> {
