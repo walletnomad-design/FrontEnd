@@ -66,3 +66,19 @@ export interface RegisterPayload {
     email: string;
     password: string;
 }
+
+export interface User {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  dni: string;
+}
+
+export interface RegisterPayload {
+  firstName: string;
+  lastName: string;
+  dni: string;
+  email: string;
+  password: string;
+}

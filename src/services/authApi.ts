@@ -1,22 +1,21 @@
 import { apiRequest, setAuthToken } from "./httpClient";
 import type { AuthResponse, LoginPayload, RegisterPayload } from "../types";
 
-// 🔧 Cambiar a false cuando P3 tenga /api/auth/register y /api/auth/login reales.
 const USE_MOCK = false;
 
 const MOCK_DELAY_MS = 500;
 
-function mockAuthResponse(email: string): AuthResponse {
+function mockAuthResponse(email: string, firstName = "Usuario", lastName = "Mock", dni = "00000000"): AuthResponse {
   return {
     token: "mock-jwt-token",
-    user: { id: 1, email },
+    user: { id: 1, email, firstName, lastName, dni },
   };
 }
 
 export async function register(payload: RegisterPayload): Promise<AuthResponse> {
   if (USE_MOCK) {
     await new Promise((r) => setTimeout(r, MOCK_DELAY_MS));
-    const res = mockAuthResponse(payload.email);
+    const res = mockAuthResponse(payload.email, payload.firstName, payload.lastName, payload.dni);
     setAuthToken(res.token);
     return res;
   }
