@@ -1,6 +1,5 @@
-@import "tailwindcss";
-
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
 
 @theme {
   /* Paleta — Exchange Board */
@@ -121,4 +120,4 @@ body {
 
 .animate-spin-slow {
   animation: spin-slow 9s linear infinite reverse;
-}
+} 
