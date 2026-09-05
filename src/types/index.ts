@@ -82,3 +82,49 @@ export interface RegisterPayload {
   email: string;
   password: string;
 }
+
+export type ExchangeOperationType = "buy" | "sell" | "exchange";
+
+export type RatesSource = "currencyfreaks" | "fallback" | "cache";
+
+export interface RatesResponse {
+  base: Currency;
+  rates: Record<Currency, number>;
+  source: RatesSource;
+  timestamp: string;
+}
+
+export interface ExchangePayload {
+  type: ExchangeOperationType;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  amount: number;
+}
+
+export interface ExchangeResult {
+  id: number;
+  type: ExchangeOperationType;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  fromAmount: number;
+  toAmount: number;
+  rate: number;
+  status: "completed" | "failed";
+  createdAt: string;
+}
+export interface ExchangeResult {
+  id: number;
+  userId: number;
+  type: ExchangeOperationType;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  fromAmount: number;
+  toAmount: number;
+  rate: number;
+  status: "completed" | "failed";
+  createdAt: string;
+}
+
+export interface ExchangeApiResponse {
+  transaction: ExchangeResult;
+}

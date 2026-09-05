@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "./Button";
 
@@ -19,6 +19,9 @@ export function Navbar() {
 
       {isAuthenticated && (
         <div className="flex items-center gap-4">
+          <Link to="/exchange" className="text-sm font-medium text-slate hover:text-amber">
+            Intercambiar
+          </Link>
           <span className="text-sm text-slate">{user?.email}</span>
           <Button variant="secondary" onClick={handleLogout}>
             Cerrar sesión

@@ -5,6 +5,7 @@ import { TickerBackground } from "./components/TickerBackground";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
+import { Exchange } from "./pages/Exchange";
 
 function App() {
   return (
@@ -19,6 +20,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exchange"
+            element={
+              <ProtectedRoute>
+                <Exchange />
               </ProtectedRoute>
             }
           />
