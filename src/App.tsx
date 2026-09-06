@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { TickerBackground } from "./components/TickerBackground";
+import { AppLayout } from "./components/AppLayout";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
@@ -11,7 +11,6 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <TickerBackground />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -19,7 +18,9 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -27,7 +28,9 @@ function App() {
             path="/exchange"
             element={
               <ProtectedRoute>
-                <Exchange />
+                <AppLayout>
+                  <Exchange />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
