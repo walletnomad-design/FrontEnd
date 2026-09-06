@@ -1,13 +1,30 @@
 import { ApiError, type ApiErrorBody } from "../types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+const TOKEN_KEY = "nomadwallet_token";
 
-// Guardamos el token acá para no depender de importar el AuthContext
-// dentro de un archivo que no es un componente React.
-let authToken: string | null = null;
+// El token se restaura de localStorage apenas se carga este módulo,
+// antes de que cualquier componente pida datos protegidos.
+let authToken: string | null = (() => {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+})();
 
 export function setAuthToken(token: string | null): void {
   authToken = token;
+  try {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  } catch {
+    // Si localStorage no esta disponible (modo privado, etc.), seguimos
+    // funcionando en memoria nomas, sin persistencia entre recargas.
+  }
 }
 
 interface RequestOptions {
@@ -15,10 +32,6 @@ interface RequestOptions {
   body?: unknown;
 }
 
-/**
- * Wrapper único de fetch. Agrega el header Authorization si hay token,
- * parsea JSON y convierte respuestas de error { error, message } en ApiError.
- */
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

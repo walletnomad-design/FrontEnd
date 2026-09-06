@@ -32,6 +32,7 @@ export interface RegisterFormErrors extends LoginFormErrors {
   firstName?: string;
   lastName?: string;
   dni?: string;
+  confirmPassword?: string;
 }
 
 export function validateLoginForm(email: string, password: string): LoginFormErrors {
@@ -58,7 +59,8 @@ export function validateRegisterForm(
   lastName: string,
   dni: string,
   email: string,
-  password: string
+  password: string,
+  confirmPassword: string
 ): RegisterFormErrors {
   const errors: RegisterFormErrors = {};
 
@@ -86,6 +88,12 @@ export function validateRegisterForm(
     errors.password = "La contraseña es obligatoria";
   } else if (!isValidPassword(password)) {
     errors.password = "Mínimo 8 caracteres, con letras y números";
+  }
+
+  if (!confirmPassword) {
+    errors.confirmPassword = "Confirmá tu contraseña";
+  } else if (password !== confirmPassword) {
+    errors.confirmPassword = "Las contraseñas no coinciden";
   }
 
   return errors;
