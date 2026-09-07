@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { Exchange } from "./pages/Exchange";
+import { Transactions } from "./pages/Transactions";
 
 function App() {
   return (
@@ -30,6 +31,16 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <Exchange />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Transactions />
                 </AppLayout>
               </ProtectedRoute>
             }
