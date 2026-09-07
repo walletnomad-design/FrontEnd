@@ -27,19 +27,23 @@ export interface Wallet {
     userId: number;
 }
 
-export interface transaction {
-    id: number;
-    walletId: number;
-    currency: Currency;
-    amount: number;
-    type?: string;
-    createdAt: string;
+export interface Transaction {
+  id: number;
+  userId: number;
+  walletId: number;
+  type: ExchangeOperationType;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  fromAmount: number;
+  toAmount: number;
+  rate: number;
+  status: "completed" | "failed";
+  createdAt: string;
 }
 
 export interface TransactionsResponse {
-    transactions: transaction[];
+  transactions: Transaction[];
 }
-
 //Formato de error unico para todas las rutas, segun el contrato
 export interface ApiErrorBody {
     error: string;
@@ -127,4 +131,35 @@ export interface ExchangeResult {
 
 export interface ExchangeApiResponse {
   transaction: ExchangeResult;
+}
+
+export interface Goal {
+  id: number;
+  userId: number;
+  name: string;
+  currency: Currency;
+  targetAmount: number;
+  currentAmount: number;
+  progress: number;
+  completed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GoalsResponse {
+  goals: Goal[];
+}
+
+export interface CreateGoalPayload {
+  name: string;
+  currency: Currency;
+  targetAmount: number;
+}
+
+export interface AddContributionPayload {
+  amount: number;
+}
+
+export interface GoalApiResponse {
+  goal: Goal;
 }
