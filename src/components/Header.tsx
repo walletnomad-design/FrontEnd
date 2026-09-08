@@ -48,7 +48,6 @@ export function Header() {
         title="Próximamente"
       >
         <BellIcon />
-        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
       </button>
 
       <div className="relative" ref={menuRef}>
