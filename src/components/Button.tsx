@@ -19,9 +19,9 @@ export function Button({
 
   const variants = {
     primary:
-      "bg-amber text-navy hover:bg-amber-dim hover:shadow-[0_0_0_3px_rgba(240,165,55,0.25)]",
+      "bg-gradient-to-r from-primary to-violet text-white hover:opacity-90 hover:shadow-[0_0_0_3px_rgba(99,102,241,0.25)]",
     secondary:
-      "bg-transparent text-bone border border-slate/30 hover:border-slate/60 hover:bg-white/5",
+      "bg-transparent text-text border border-white/15 hover:border-white/30 hover:bg-white/5",
   };
 
   return (
@@ -33,7 +33,7 @@ export function Button({
       <span className={isLoading ? "opacity-0" : "opacity-100"}>{children}</span>
       {isLoading && (
         <span className="absolute inset-0 flex items-center justify-center">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-navy/30 border-t-navy" />
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
         </span>
       )}
     </button>

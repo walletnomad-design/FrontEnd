@@ -1,8 +1,9 @@
-import { useState, type InputHTMLAttributes } from "react";
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
+  icon?: ReactNode;
 }
 
 function EyeIcon() {
@@ -23,26 +24,31 @@ function EyeOffIcon() {
   );
 }
 
-export function Input({ label, error, id, type, className = "", ...rest }: InputProps) {
+export function Input({ label, error, id, type, icon, className = "", ...rest }: InputProps) {
   const inputId = id ?? label.toLowerCase().replace(/\s+/g, "-");
   const isPassword = type === "password";
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={inputId} className="text-xs font-medium uppercase tracking-wide text-slate">
+      <label htmlFor={inputId} className="text-xs font-medium uppercase tracking-wide text-muted">
         {label}
       </label>
       <div className="relative">
+        {icon && (
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+            {icon}
+          </span>
+        )}
         <input
           id={inputId}
           type={isPassword ? (showPassword ? "text" : "password") : type}
-          className={`w-full rounded-lg border bg-white/5 px-3.5 py-2.5 ${
-            isPassword ? "pr-11" : ""
-          } text-bone placeholder:text-slate/50 outline-none transition-all duration-200 ease-[var(--ease-board)] focus:bg-white/[0.07] focus:ring-2 ${
+          className={`w-full rounded-lg border bg-white/5 py-2.5 ${icon ? "pl-10" : "px-3.5"} ${
+            isPassword ? "pr-11" : "pr-3.5"
+          } text-text placeholder:text-muted/50 outline-none transition-all duration-200 focus:bg-white/[0.07] focus:ring-2 ${
             error
               ? "border-red-400/60 focus:ring-red-400/25"
-              : "border-slate/25 focus:border-amber/60 focus:ring-amber/20"
+              : "border-white/10 focus:border-primary/60 focus:ring-primary/20"
           } ${className}`}
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
@@ -52,7 +58,7 @@ export function Input({ label, error, id, type, className = "", ...rest }: Input
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate transition-colors hover:text-bone"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted transition-colors hover:text-text"
             aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
             tabIndex={-1}
           >
