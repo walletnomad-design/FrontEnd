@@ -42,8 +42,10 @@ export function Header() {
     <header className="flex items-center justify-end gap-3 border-b border-white/5 px-6 py-4">
       <button
         type="button"
+        disabled
         className="relative rounded-full p-2 text-muted transition-colors hover:bg-white/5 hover:text-text"
         aria-label="Notificaciones"
+        title="Próximamente"
       >
         <BellIcon />
         <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
