@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
+
 
 interface NavItem {
   label: string;
@@ -38,11 +39,14 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Alertas de tasa", to: "/alerts", icon: <Icon d={ICONS.help} />, phase: 2 },
   { label: "Destinatarios", icon: <Icon d={ICONS.users} />, phase: 3 },
   { label: "Tarjetas", icon: <Icon d={ICONS.card} />, phase: 3 },
-  { label: "Ajustes", to: "/settings", icon: <Icon d={ICONS.settings} />, phase: 2 },
-  { label: "Ayuda", to: "/help", icon: <Icon d={ICONS.help} />, phase: 2 },
+  { label: "Ajustes", to: "/settings", icon: <Icon d={ICONS.settings} />, phase: 3 },
+  { label: "Ayuda", to: "/help", icon: <Icon d={ICONS.help} />, phase: 3 },
 ];
 
 export function Sidebar() {
+  const location = useLocation();
+  const currentPath = `${location.pathname}${location.search}`;
+
   return (
     <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/5 bg-surface px-3 py-6">
       <div className="mb-8 flex items-center gap-2 px-2">
@@ -76,17 +80,17 @@ export function Sidebar() {
             );
           }
 
+          const isActive = item.to === currentPath;
+
           return (
             <NavLink
               key={item.label}
               to={item.to!}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
-                  isActive
-                    ? "bg-gradient-to-r from-primary/20 to-violet/10 text-text"
-                    : "text-muted hover:bg-white/5 hover:text-text"
-                }`
-              }
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
+                isActive
+                  ? "bg-gradient-to-r from-primary/20 to-violet/10 text-text"
+                  : "text-muted hover:bg-white/5 hover:text-text"
+              }`}
             >
               {item.icon}
               {item.label}

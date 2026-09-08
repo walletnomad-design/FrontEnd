@@ -7,6 +7,8 @@ import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { Exchange } from "./pages/Exchange";
 import { Transactions } from "./pages/Transactions";
+import { Goals } from "./pages/Goals";
+import { Alerts } from "./pages/Alerts";
 
 function App() {
   return (
@@ -41,6 +43,26 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <Transactions />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Goals />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Alerts />
                 </AppLayout>
               </ProtectedRoute>
             }

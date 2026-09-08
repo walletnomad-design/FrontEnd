@@ -7,7 +7,7 @@ import type {
   ExchangeApiResponse,
 } from "../types";
 
-const USE_MOCK = true;
+const USE_MOCK = false; // Cambiar a true para usar el mock de tasas y operaciones
 const MOCK_DELAY_MS = 500;
 
 // Tasas fijas de referencia para el mock (no son reales, solo para probar la UI

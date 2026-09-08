@@ -163,3 +163,33 @@ export interface AddContributionPayload {
 export interface GoalApiResponse {
   goal: Goal;
 }
+
+export type AlertCondition = "gte" | "lte";
+export type AlertStatus = "active" | "triggered";
+
+export interface RateAlert {
+  id: number;
+  userId: number;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  threshold: number;
+  condition: AlertCondition;
+  status: AlertStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RateAlertsResponse {
+  alerts: RateAlert[];
+}
+
+export interface CreateRateAlertPayload {
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  threshold: number;
+  condition: AlertCondition;
+}
+
+export interface RateAlertApiResponse {
+  alert: RateAlert;
+}
