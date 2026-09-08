@@ -15,11 +15,19 @@ const OPERATION_LABELS: Record<ExchangeOperationType, string> = {
 };
 
 interface ExchangeFormProps {
+  initialType?: ExchangeOperationType;
   onSuccess: (result: ExchangeResult) => void;
 }
 
-export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
-  const [type, setType] = useState<ExchangeOperationType>("exchange");
+export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFormProps) {
+  const [type, setType] = useState<ExchangeOperationType>(initialType);
+
+  // Si el usuario navega a /exchange con otro ?type= mientras ya está en esta
+  // página (mismo componente, no remonta), sincronizamos la selección.
+  useEffect(() => {
+    setType(initialType);
+  }, [initialType]);
+
   const [fromCurrency, setFromCurrency] = useState<Currency>("USD");
   const [toCurrency, setToCurrency] = useState<Currency>("EUR");
   const [amount, setAmount] = useState("");
@@ -102,8 +110,8 @@ export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
             onClick={() => setType(op)}
             className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-200 ${
               type === op
-                ? "border-amber/60 bg-amber/10 text-amber"
-                : "border-slate/25 text-slate hover:border-slate/40"
+                ? "border-primary/60 bg-primary/10 text-primary"
+                : "border-white/10 text-muted hover:border-white/20"
             }`}
           >
             {OPERATION_LABELS[op]}
@@ -114,16 +122,16 @@ export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
       {/* Moneda origen / destino */}
       <div className="flex items-end gap-2">
         <div className="flex-1">
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate">
+          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted">
             Desde
           </label>
           <select
             value={fromCurrency}
             onChange={(e) => setFromCurrency(e.target.value as Currency)}
-            className="w-full rounded-lg border border-slate/25 bg-white/5 px-3.5 py-2.5 text-bone outline-none focus:border-amber/60 focus:ring-2 focus:ring-amber/20"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5 text-text outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20"
           >
             {CURRENCIES.map((c) => (
-              <option key={c} value={c} className="bg-navy-card">
+              <option key={c} value={c} className="bg-surface">
                 {c}
               </option>
             ))}
@@ -134,22 +142,22 @@ export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
           type="button"
           onClick={handleSwapCurrencies}
           aria-label="Invertir monedas"
-          className="mb-1 rounded-lg border border-slate/25 p-2.5 text-slate transition-colors hover:border-amber/50 hover:text-amber"
+          className="mb-1 rounded-lg border border-white/10 p-2.5 text-muted transition-colors hover:border-primary/50 hover:text-primary"
         >
           ⇄
         </button>
 
         <div className="flex-1">
-          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate">
+          <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted">
             Hacia
           </label>
           <select
             value={toCurrency}
             onChange={(e) => setToCurrency(e.target.value as Currency)}
-            className="w-full rounded-lg border border-slate/25 bg-white/5 px-3.5 py-2.5 text-bone outline-none focus:border-amber/60 focus:ring-2 focus:ring-amber/20"
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5 text-text outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20"
           >
             {CURRENCIES.map((c) => (
-              <option key={c} value={c} className="bg-navy-card">
+              <option key={c} value={c} className="bg-surface">
                 {c}
               </option>
             ))}
@@ -169,25 +177,25 @@ export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
       />
 
       {/* Tasa actual + equivalente estimado */}
-      <div className="rounded-lg border border-slate/15 bg-white/5 px-4 py-3 text-sm">
+      <div className="rounded-lg border border-white/5 bg-white/5 px-4 py-3 text-sm">
         {isLoadingRate ? (
-          <span className="text-slate">Consultando tasa...</span>
+          <span className="text-muted">Consultando tasa...</span>
         ) : rate ? (
           <div className="flex flex-col gap-1">
-            <span className="text-slate">
-              1 {fromCurrency} = <span className="font-mono text-bone">{rate.toFixed(4)}</span> {toCurrency}
+            <span className="text-muted">
+              1 {fromCurrency} = <span className="font-mono text-text">{rate.toFixed(4)}</span> {toCurrency}
             </span>
             {estimatedTotal !== null && (
               <span className="text-base">
                 Recibís aprox.{" "}
-                <span className="font-mono font-semibold text-amber">
+                <span className="font-mono font-semibold text-primary">
                   {formatAmount(estimatedTotal, toCurrency)}
                 </span>
               </span>
             )}
           </div>
         ) : (
-          <span className="text-slate">No se pudo obtener la tasa</span>
+          <span className="text-muted">No se pudo obtener la tasa</span>
         )}
       </div>
 
