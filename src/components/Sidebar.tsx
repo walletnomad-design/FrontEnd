@@ -39,8 +39,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Alertas de tasa", to: "/alerts", icon: <Icon d={ICONS.help} />, phase: 2 },
   { label: "Destinatarios", icon: <Icon d={ICONS.users} />, phase: 3 },
   { label: "Tarjetas", icon: <Icon d={ICONS.card} />, phase: 3 },
-  { label: "Ajustes", to: "/settings", icon: <Icon d={ICONS.settings} />, phase: 2 },
-  { label: "Ayuda", to: "/help", icon: <Icon d={ICONS.help} />, phase: 2 },
+  { label: "Ajustes", to: "/settings", icon: <Icon d={ICONS.settings} />, phase: 3 },
+  { label: "Ayuda", to: "/help", icon: <Icon d={ICONS.help} />, phase: 3 },
 ];
 
 export function Sidebar() {
