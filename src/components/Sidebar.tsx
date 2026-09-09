@@ -31,8 +31,8 @@ const ICONS = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Resumen", to: "/dashboard", icon: <Icon d={ICONS.home} />, phase: 1 },
-  { label: "Comprar", to: "/exchange?type=buy", icon: <Icon d={ICONS.deposit} />, phase: 1 },
-  { label: "Vender", to: "/exchange?type=sell", icon: <Icon d={ICONS.transfer} />, phase: 1 },
+  { label: "Depositar", to: "/exchange?type=deposit", icon: <Icon d={ICONS.deposit} />, phase: 1 },
+  { label: "Transferir", to: "/exchange?type=transfer", icon: <Icon d={ICONS.transfer} />, phase: 1 },
   { label: "Intercambiar", to: "/exchange?type=exchange", icon: <Icon d={ICONS.exchange} />, phase: 1 },
   { label: "Historial", to: "/transactions", icon: <Icon d={ICONS.history} />, phase: 1 },
   { label: "Metas", to: "/goals", icon: <Icon d={ICONS.card} />, phase: 2 },

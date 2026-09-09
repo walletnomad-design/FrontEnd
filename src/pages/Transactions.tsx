@@ -1,13 +1,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import * as walletApi from "../services/walletApi";
 import { formatAmount } from "../utils/currency";
+import { useAuth } from "../context/AuthContext";
 import type { Transaction, ExchangeOperationType } from "../types";
-
-const TYPE_LABEL: Record<ExchangeOperationType, string> = {
-  buy: "Comprar",
-  sell: "Vender",
-  exchange: "Intercambiar",
-};
 
 function ArrowUpIcon() {
   return (
@@ -39,11 +34,39 @@ type TypeStyle = {
   bg: string;
 };
 
+// buy/sell se mantienen solo para leer historial viejo — ya no se generan
+// operaciones nuevas de ese tipo desde el frontend (ver Depositar/Transferir).
 const TYPE_STYLE: Record<ExchangeOperationType, TypeStyle> = {
   buy: { icon: <ArrowUpIcon />, color: "text-green-400", bg: "bg-green-400/10" },
   sell: { icon: <ArrowDownIcon />, color: "text-red-400", bg: "bg-red-400/10" },
   exchange: { icon: <ArrowsExchangeIcon />, color: "text-amber-400", bg: "bg-amber-400/10" },
+  deposit: { icon: <ArrowDownIcon />, color: "text-green-400", bg: "bg-green-400/10" },
+  transfer: { icon: <ArrowUpIcon />, color: "text-red-400", bg: "bg-red-400/10" },
 };
+
+function labelFor(tx: Transaction, currentUserId: number | undefined): string {
+  switch (tx.type) {
+    case "deposit":
+      return "Depósito";
+    case "exchange":
+      return "Intercambio";
+    case "buy":
+      return "Comprar";
+    case "sell":
+      return "Vender";
+    case "transfer":
+      return tx.userId === currentUserId ? "Transferencia enviada" : "Transferencia recibida";
+    default:
+      return tx.type;
+  }
+}
+
+function styleFor(tx: Transaction, currentUserId: number | undefined): TypeStyle {
+  if (tx.type === "transfer" && tx.userId !== currentUserId) {
+    return { icon: <ArrowDownIcon />, color: "text-green-400", bg: "bg-green-400/10" };
+  }
+  return TYPE_STYLE[tx.type];
+}
 
 function TransactionRowSkeleton() {
   return (
@@ -58,8 +81,8 @@ function TransactionRowSkeleton() {
   );
 }
 
-function TransactionRow({ tx }: { tx: Transaction }) {
-  const style = TYPE_STYLE[tx.type];
+function TransactionRow({ tx, currentUserId }: { tx: Transaction; currentUserId: number | undefined }) {
+  const style = styleFor(tx, currentUserId);
   const date = new Date(tx.createdAt).toLocaleString("es-AR", {
     day: "2-digit",
     month: "short",
@@ -74,7 +97,7 @@ function TransactionRow({ tx }: { tx: Transaction }) {
       </span>
 
       <div className="flex-1">
-        <p className="text-sm font-medium text-text">{TYPE_LABEL[tx.type]}</p>
+        <p className="text-sm font-medium text-text">{labelFor(tx, currentUserId)}</p>
         <p className="text-xs text-muted">{date}</p>
       </div>
 
@@ -89,6 +112,7 @@ function TransactionRow({ tx }: { tx: Transaction }) {
 }
 
 export function Transactions() {
+  const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -148,10 +172,10 @@ export function Transactions() {
       )}
 
       {!isLoading && !error && transactions && transactions.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 pb-4">
           {transactions.map((tx, i) => (
             <div key={tx.id} className="animate-rise" style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}>
-              <TransactionRow tx={tx} />
+              <TransactionRow tx={tx} currentUserId={user?.id} />
             </div>
           ))}
         </div>

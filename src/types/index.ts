@@ -39,6 +39,7 @@ export interface Transaction {
   rate: number;
   status: "completed" | "failed";
   createdAt: string;
+  toUserId?: number;
 }
 
 export interface TransactionsResponse {
@@ -48,16 +49,21 @@ export interface TransactionsResponse {
 export interface ApiErrorBody {
     error: string;
     message: string;
+    currency?: Currency;
+    available?: number;
 }
 
-//Error tipado que lanzan las funciones de src/services ante una respuesta no-OK
 export class ApiError extends Error {
     code: string;
+    currency?: Currency;
+    available?: number;
 
     constructor(body: ApiErrorBody) {
         super(body.message);
         this.name = "ApiError";
         this.code = body.error;
+        this.currency = body.currency;
+        this.available = body.available;
     }
 }
 
@@ -87,7 +93,6 @@ export interface RegisterPayload {
   password: string;
 }
 
-export type ExchangeOperationType = "buy" | "sell" | "exchange";
 
 export type RatesSource = "currencyfreaks" | "fallback" | "cache";
 
@@ -192,4 +197,29 @@ export interface CreateRateAlertPayload {
 
 export interface RateAlertApiResponse {
   alert: RateAlert;
+}
+
+export type ExchangeOperationType = "buy" | "sell" | "exchange" | "deposit" | "transfer";
+
+export interface DepositPayload {
+  currency: Currency;
+  amount: number;
+}
+
+export interface TransferPayload {
+  toEmail: string;
+  currency: Currency;
+  amount: number;
+}
+
+export interface MoneyOpApiResponse {
+  transaction: Transaction;
+}
+
+export interface AiChatPayload {
+  message: string;
+}
+
+export interface AiChatResponse {
+  reply: string;
 }
