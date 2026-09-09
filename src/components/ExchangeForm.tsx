@@ -4,30 +4,15 @@ import { Button } from "./Button";
 import { ErrorMessage } from "./ErrorMessage";
 import * as exchangeApi from "../services/exchangeApi";
 import { formatAmount } from "../utils/currency";
-import type { Currency, ExchangeOperationType, ExchangeResult } from "../types";
+import type { Currency, ExchangeResult } from "../types";
 
 const CURRENCIES: Currency[] = ["USD", "EUR", "COP"];
 
-const OPERATION_LABELS: Record<ExchangeOperationType, string> = {
-  buy: "Comprar",
-  sell: "Vender",
-  exchange: "Intercambiar",
-};
-
 interface ExchangeFormProps {
-  initialType?: ExchangeOperationType;
   onSuccess: (result: ExchangeResult) => void;
 }
 
-export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFormProps) {
-  const [type, setType] = useState<ExchangeOperationType>(initialType);
-
-  // Si el usuario navega a /exchange con otro ?type= mientras ya está en esta
-  // página (mismo componente, no remonta), sincronizamos la selección.
-  useEffect(() => {
-    setType(initialType);
-  }, [initialType]);
-
+export function ExchangeForm({ onSuccess }: ExchangeFormProps) {
   const [fromCurrency, setFromCurrency] = useState<Currency>("USD");
   const [toCurrency, setToCurrency] = useState<Currency>("EUR");
   const [amount, setAmount] = useState("");
@@ -37,8 +22,6 @@ export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Trae la tasa cada vez que cambia la moneda de origen o destino,
-  // asi el usuario ve el valor actualizado antes de confirmar la operacion.
   useEffect(() => {
     let cancelled = false;
 
@@ -85,7 +68,7 @@ export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFo
     setIsSubmitting(true);
     try {
       const result = await exchangeApi.exchange({
-        type,
+        type: "exchange",
         fromCurrency,
         toCurrency,
         amount: numericAmount,
@@ -101,25 +84,6 @@ export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFo
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
-      {/* Selector de tipo de operación */}
-      <div className="flex gap-2">
-        {(Object.keys(OPERATION_LABELS) as ExchangeOperationType[]).map((op) => (
-          <button
-            key={op}
-            type="button"
-            onClick={() => setType(op)}
-            className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-200 ${
-              type === op
-                ? "border-primary/60 bg-primary/10 text-primary"
-                : "border-white/10 text-muted hover:border-white/20"
-            }`}
-          >
-            {OPERATION_LABELS[op]}
-          </button>
-        ))}
-      </div>
-
-      {/* Moneda origen / destino */}
       <div className="flex items-end gap-2">
         <div className="flex-1">
           <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-muted">
@@ -176,7 +140,6 @@ export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFo
         placeholder="0.00"
       />
 
-      {/* Tasa actual + equivalente estimado */}
       <div className="rounded-lg border border-white/5 bg-white/5 px-4 py-3 text-sm">
         {isLoadingRate ? (
           <span className="text-muted">Consultando tasa...</span>
@@ -202,7 +165,7 @@ export function ExchangeForm({ initialType = "exchange", onSuccess }: ExchangeFo
       <ErrorMessage message={error} />
 
       <Button type="submit" isLoading={isSubmitting} disabled={!hasValidAmount || fromCurrency === toCurrency}>
-        {OPERATION_LABELS[type]}
+        Intercambiar
       </Button>
     </form>
   );
