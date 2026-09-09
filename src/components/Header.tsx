@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { NGlyph } from "./Logo";
 
 function BellIcon() {
   return (
@@ -17,7 +18,11 @@ function getInitials(firstName?: string, lastName?: string): string {
   return (a + b).toUpperCase() || "?";
 }
 
-export function Header() {
+interface HeaderProps {
+  onOpenSidebar: () => void;
+}
+
+export function Header({ onOpenSidebar }: HeaderProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,40 +44,51 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-end gap-3 border-b border-white/5 px-6 py-4">
+    <header className="flex items-center justify-between gap-3 border-b border-white/5 px-4 py-4 lg:justify-end lg:px-6">
       <button
         type="button"
-        disabled
-        className="relative rounded-full p-2 text-muted transition-colors hover:bg-white/5 hover:text-text"
-        aria-label="Notificaciones"
-        title="Próximamente"
+        onClick={onOpenSidebar}
+        aria-label="Abrir menú"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet shadow-[0_0_16px_-4px_rgba(99,102,241,0.6)] lg:hidden"
       >
-        <BellIcon />
+        <NGlyph size={18} />
       </button>
 
-      <div className="relative" ref={menuRef}>
+      <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-white/5"
+          disabled
+          className="relative rounded-full p-2 text-muted/50 cursor-not-allowed"
+          aria-label="Notificaciones (próximamente)"
+          title="Próximamente"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-violet text-sm font-semibold text-white">
-            {getInitials(user?.firstName, user?.lastName)}
-          </span>
-          <span className="text-sm font-medium text-text">{user?.firstName}</span>
+          <BellIcon />
         </button>
 
-        {menuOpen && (
-          <div className="absolute right-0 top-full z-10 mt-2 w-44 animate-rise rounded-lg border border-white/10 bg-surface py-1 shadow-xl">
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="block w-full px-4 py-2 text-left text-sm text-muted hover:bg-white/5 hover:text-text"
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        )}
+        <div className="relative" ref={menuRef}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-white/5"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-violet text-sm font-semibold text-white">
+              {getInitials(user?.firstName, user?.lastName)}
+            </span>
+            <span className="hidden text-sm font-medium text-text sm:inline">{user?.firstName}</span>
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 top-full z-10 mt-2 w-44 animate-rise rounded-lg border border-white/10 bg-surface py-1 shadow-xl">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="block w-full px-4 py-2 text-left text-sm text-muted hover:bg-white/5 hover:text-text"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
