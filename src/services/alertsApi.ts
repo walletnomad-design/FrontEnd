@@ -4,6 +4,8 @@ import type {
   RateAlertApiResponse,
   CreateRateAlertPayload,
   RateAlert,
+  EvaluateAlertsResponse,
+  RateAlertEvaluation,
 } from "../types";
 
 export async function getAlerts(): Promise<RateAlert[]> {
@@ -19,11 +21,11 @@ export async function createAlert(payload: CreateRateAlertPayload): Promise<Rate
   return res.alert;
 }
 
-export async function evaluateAlert(alertId: number): Promise<RateAlert> {
-  const res = await apiRequest<RateAlertApiResponse>(`/api/rate-alerts/${alertId}/evaluate`, {
+export async function evaluateAllAlerts(): Promise<RateAlertEvaluation[]> {
+  const res = await apiRequest<EvaluateAlertsResponse>("/api/rate-alerts/evaluate", {
     method: "POST",
   });
-  return res.alert;
+  return res.evaluations;
 }
 
 export async function reactivateAlert(alertId: number): Promise<RateAlert> {

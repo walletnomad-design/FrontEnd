@@ -6,37 +6,29 @@ import { Modal } from "../components/Modal";
 import { CreateAlertForm } from "../components/CreateAlertForm";
 import { AlertCard } from "../components/AlertCard";
 import * as alertsApi from "../services/alertsApi";
-import type { RateAlert } from "../types";
+import type { RateAlert, RateAlertEvaluation } from "../types";
 
 export function Alerts() {
   const [alerts, setAlerts] = useState<RateAlert[] | null>(null);
+  const [evaluations, setEvaluations] = useState<RateAlertEvaluation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEvaluating, setIsEvaluating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [busyId, setBusyId] = useState<number | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const list = await alertsApi.getAlerts();
-        if (!cancelled) setAlerts(list);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "No se pudieron cargar las alertas");
-        }
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
+  const loadAlerts = async () => {
+    try {
+      const list = await alertsApi.getAlerts();
+      setAlerts(list);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudieron cargar las alertas");
     }
+  };
 
-    load();
-    return () => {
-      cancelled = true;
-    };
+  useEffect(() => {
+    setIsLoading(true);
+    loadAlerts().finally(() => setIsLoading(false));
   }, []);
 
   const handleCreated = (alert: RateAlert) => {
@@ -44,20 +36,19 @@ export function Alerts() {
     setShowCreate(false);
   };
 
-  const updateAlertInList = (updated: RateAlert) => {
-    setAlerts((prev) => (prev ? prev.map((a) => (a.id === updated.id ? updated : a)) : prev));
-  };
-
-  const handleEvaluate = async (alert: RateAlert) => {
-    setBusyId(alert.id);
+  const handleEvaluateAll = async () => {
+    setIsEvaluating(true);
     setError(null);
     try {
-      const updated = await alertsApi.evaluateAlert(alert.id);
-      updateAlertInList(updated);
+      const results = await alertsApi.evaluateAllAlerts();
+      setEvaluations(results);
+      // Las que cumplieron la condición pasan a "Disparada" del lado del backend;
+      // refrescamos la lista para reflejar el nuevo estado.
+      await loadAlerts();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo evaluar la alerta");
+      setError(err instanceof Error ? err.message : "No se pudieron evaluar las alertas");
     } finally {
-      setBusyId(null);
+      setIsEvaluating(false);
     }
   };
 
@@ -66,7 +57,7 @@ export function Alerts() {
     setError(null);
     try {
       const updated = await alertsApi.reactivateAlert(alert.id);
-      updateAlertInList(updated);
+      setAlerts((prev) => (prev ? prev.map((a) => (a.id === updated.id ? updated : a)) : prev));
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo reactivar la alerta");
     } finally {
@@ -92,12 +83,17 @@ export function Alerts() {
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between animate-rise">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 animate-rise">
         <div>
           <h1 className="mb-1 text-2xl font-bold text-text">Alertas de tasa</h1>
           <p className="text-muted">Enterate cuando una cotización llegue al valor que te interesa</p>
         </div>
-        <Button onClick={() => setShowCreate(true)}>+ Nueva alerta</Button>
+        <div className="flex gap-2">
+          <Button variant="secondary" onClick={handleEvaluateAll} isLoading={isEvaluating}>
+            Evaluar alertas
+          </Button>
+          <Button onClick={() => setShowCreate(true)}>+ Nueva alerta</Button>
+        </div>
       </div>
 
       {isLoading && <Loader label="Cargando tus alertas..." />}
@@ -112,16 +108,19 @@ export function Alerts() {
 
       {!isLoading && alerts && alerts.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {alerts.map((alert) => (
-            <AlertCard
-              key={alert.id}
-              alert={alert}
-              isBusy={busyId === alert.id}
-              onEvaluate={() => handleEvaluate(alert)}
-              onReactivate={() => handleReactivate(alert)}
-              onDelete={() => handleDelete(alert)}
-            />
-          ))}
+          {alerts.map((alert) => {
+            const evaluation = evaluations.find((e) => e.alertId === alert.id);
+            return (
+              <AlertCard
+                key={alert.id}
+                alert={alert}
+                currentRate={evaluation?.currentRate}
+                isBusy={busyId === alert.id}
+                onReactivate={() => handleReactivate(alert)}
+                onDelete={() => handleDelete(alert)}
+              />
+            );
+          })}
         </div>
       )}
 
