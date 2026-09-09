@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { BalanceCard } from "../components/BalanceCard";
 import { GoalProgress } from "../components/GoalProgress";
+import { QuickActions } from "../components/QuickActions";
+import { RecentActivity } from "../components/RecentActivity";
 import { Loader } from "../components/Loader";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { useAuth } from "../context/AuthContext";
@@ -47,7 +49,7 @@ export function Dashboard() {
   }, []);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
+    <main className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="mb-1 text-2xl font-bold text-text animate-rise">Hola, {user?.firstName}</h1>
       <p className="mb-6 text-muted animate-rise">Aquí tienes un resumen de tus finanzas.</p>
 
@@ -55,27 +57,43 @@ export function Dashboard() {
 
       <ErrorMessage message={error} />
 
-      {!isLoading && !error && balances && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {balances.map((balance, i) => (
-            <div key={balance.currency} className="animate-rise" style={{ animationDelay: `${i * 80}ms` }}>
-              <BalanceCard balance={balance} />
+      {!isLoading && !error && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Columna principal */}
+          <div className="flex flex-col gap-6 lg:col-span-2">
+            <div className="animate-rise">
+              <QuickActions />
             </div>
-          ))}
-        </div>
-      )}
 
-      {!isLoading && !error && goals && goals.length > 0 && (
-        <div className="mt-2 flex flex-col gap-4">
-          {goals.map((goal) => (
-            <GoalProgress key={goal.id} goal={goal} />
-          ))}
-        </div>
-      )}
+            {balances && (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {balances.map((balance, i) => (
+                  <div key={balance.currency} className="animate-rise" style={{ animationDelay: `${i * 80}ms` }}>
+                    <BalanceCard balance={balance} />
+                  </div>
+                ))}
+              </div>
+            )}
 
-      {!isLoading && !error && goals && goals.length === 0 && (
-        <div className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-6 text-center text-sm text-muted">
-          Todavía no creaste ninguna meta de ahorro.
+            {goals && goals.length > 0 && (
+              <div className="flex flex-col gap-4">
+                {goals.map((goal) => (
+                  <GoalProgress key={goal.id} goal={goal} />
+                ))}
+              </div>
+            )}
+
+            {goals && goals.length === 0 && (
+              <div className="rounded-lg border border-white/5 bg-white/[0.02] px-4 py-6 text-center text-sm text-muted">
+                Todavía no creaste ninguna meta de ahorro.
+              </div>
+            )}
+          </div>
+
+          {/* Columna lateral */}
+          <div className="animate-rise">
+            <RecentActivity />
+          </div>
         </div>
       )}
     </main>
