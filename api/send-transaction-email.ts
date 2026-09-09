@@ -42,7 +42,17 @@ export default {
     }
 
     try {
-      const body = await request.json();
+      const body = (await request.json()) as {
+        email?: string;
+        type?: string;
+        fromAmount?: number;
+        fromCurrency?: string;
+        toAmount?: number;
+        toCurrency?: string;
+        rate?: number;
+        timestamp?: string;
+        perspective?: "sent" | "received";
+      };
 
       const {
         email,
@@ -51,7 +61,9 @@ export default {
         fromCurrency,
         toAmount,
         toCurrency,
+        rate,
         timestamp,
+        perspective,
       } = body;
 
       if (
@@ -61,7 +73,8 @@ export default {
         typeof fromAmount !== "number" ||
         typeof fromCurrency !== "string" ||
         typeof toAmount !== "number" ||
-        typeof toCurrency !== "string"
+        typeof toCurrency !== "string" ||
+        typeof rate !== "number"
       ) {
         return new Response(
           JSON.stringify({
@@ -83,18 +96,28 @@ export default {
 
       const operationLabel = operationLabels[type];
 
+      const isReceivedTransfer =
+        type === "transfer" && perspective === "received";
+
+      const mainMessage = isReceivedTransfer
+        ? `Has recibido ${toAmount} ${toCurrency}.`
+        : "Tu operación fue completada correctamente.";
+
       const operationDate = timestamp
         ? new Date(timestamp).toLocaleString("es-AR")
         : new Date().toLocaleString("es-AR");
 
-      const subject = `NomadWallet - ${operationLabel} confirmado`;
+      const subject = isReceivedTransfer
+        ? "NomadWallet - Transferencia recibida"
+        : `NomadWallet - ${operationLabel} confirmado`;
 
       const textBody = `
-Tu operación fue completada correctamente.
+${mainMessage}
 
 Operación: ${operationLabel}
 Monto origen: ${fromAmount} ${fromCurrency}
 Monto destino: ${toAmount} ${toCurrency}
+Tasa: ${rate}
 Fecha: ${operationDate}
 
 NomadWallet
@@ -104,11 +127,13 @@ Tu dinero, sin fronteras.
       const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
           <h2>NomadWallet</h2>
-          <p>Tu operación fue completada correctamente.</p>
+
+          <p>${mainMessage}</p>
 
           <p><strong>Operación:</strong> ${operationLabel}</p>
           <p><strong>Monto origen:</strong> ${fromAmount} ${fromCurrency}</p>
           <p><strong>Monto destino:</strong> ${toAmount} ${toCurrency}</p>
+          <p><strong>Tasa:</strong> ${rate}</p>
           <p><strong>Fecha:</strong> ${operationDate}</p>
 
           <hr />
@@ -141,15 +166,10 @@ Tu dinero, sin fronteras.
 
       await sesClient.send(command);
 
-      return new Response(
-        JSON.stringify({
-          sent: true,
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ sent: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
     } catch (error) {
       console.error("SES email error:", error);
 
