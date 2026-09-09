@@ -7,13 +7,13 @@ const CONDITION_LABEL: Record<RateAlert["condition"], string> = {
 
 interface AlertCardProps {
   alert: RateAlert;
-  onEvaluate: () => void;
+  currentRate?: number;
   onReactivate: () => void;
   onDelete: () => void;
   isBusy: boolean;
 }
 
-export function AlertCard({ alert, onEvaluate, onReactivate, onDelete, isBusy }: AlertCardProps) {
+export function AlertCard({ alert, currentRate, onReactivate, onDelete, isBusy }: AlertCardProps) {
   const isTriggered = alert.status === "triggered";
 
   return (
@@ -36,8 +36,15 @@ export function AlertCard({ alert, onEvaluate, onReactivate, onDelete, isBusy }:
         <b className="font-mono text-text">{alert.threshold}</b>
       </p>
 
+      {currentRate !== undefined && (
+        <p className="mt-1 text-xs text-muted">
+          Tasa actual: 1 {alert.fromCurrency} ≈{" "}
+          <b className="font-mono text-text">{currentRate.toFixed(4)}</b> {alert.toCurrency}
+        </p>
+      )}
+
       <div className="mt-5 flex justify-end gap-3">
-        {isTriggered ? (
+        {isTriggered && (
           <button
             type="button"
             onClick={onReactivate}
@@ -45,15 +52,6 @@ export function AlertCard({ alert, onEvaluate, onReactivate, onDelete, isBusy }:
             className="text-sm font-medium text-primary transition-colors hover:text-violet disabled:cursor-not-allowed disabled:opacity-40"
           >
             Reactivar
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onEvaluate}
-            disabled={isBusy}
-            className="text-sm font-medium text-primary transition-colors hover:text-violet disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Evaluar ahora
           </button>
         )}
         <button

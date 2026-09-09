@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
-
+import { NGlyph } from "./Logo";
 
 interface NavItem {
   label: string;
@@ -43,19 +43,38 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Ayuda", to: "/help", icon: <Icon d={ICONS.help} />, phase: 3 },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const location = useLocation();
   const currentPath = `${location.pathname}${location.search}`;
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-white/5 bg-surface px-3 py-6">
-      <div className="mb-8 flex items-center gap-2 px-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet font-bold text-white">
-          N
+    <aside
+      className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 shrink-0 flex-col border-r border-white/5 bg-surface px-3 py-6 transition-transform duration-300 lg:static lg:translate-x-0 ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      }`}
+    >
+      <div className="mb-8 flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-violet shadow-[0_0_16px_-4px_rgba(99,102,241,0.6)]">
+            <NGlyph size={16} />
+          </div>
+          <span className="text-lg font-bold text-text">
+            Nomad<span className="text-primary">Wallet</span>
+          </span>
         </div>
-        <span className="text-lg font-bold text-text">
-          Nomad<span className="text-primary">Wallet</span>
-        </span>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Cerrar menú"
+          className="rounded-md p-1 text-muted transition-colors hover:text-text lg:hidden"
+        >
+          ✕
+        </button>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
@@ -86,6 +105,7 @@ export function Sidebar() {
             <NavLink
               key={item.label}
               to={item.to!}
+              onClick={onClose}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
                 isActive
                   ? "bg-gradient-to-r from-primary/20 to-violet/10 text-text"

@@ -223,3 +223,17 @@ export interface AiChatPayload {
 export interface AiChatResponse {
   reply: string;
 }
+
+export interface RateAlertEvaluation {
+  alertId: number;
+  fromCurrency: Currency;
+  toCurrency: Currency;
+  threshold: number;
+  condition: AlertCondition;
+  currentRate: number;
+  triggered: boolean;
+}
+
+export interface EvaluateAlertsResponse {
+  evaluations: RateAlertEvaluation[];
+}
