@@ -7,6 +7,7 @@ import { Modal } from "../components/Modal";
 import { CreateGoalForm } from "../components/CreateGoalForm";
 import { ContributeForm } from "../components/ContributeForm";
 import * as goalsApi from "../services/goalsApi";
+import { formatAmount } from "../utils/currency";
 import type { Goal } from "../types";
 
 type ModalState = { type: "create" } | { type: "contribute"; goal: Goal } | null;
@@ -17,6 +18,7 @@ export function Goals() {
   const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState<ModalState>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,14 +55,20 @@ export function Goals() {
   };
 
   const handleDelete = async (goal: Goal) => {
-    if (!window.confirm(`¿Eliminar la meta "${goal.name}"? Esta acción no se puede deshacer.`)) {
+    const warning =
+      goal.currentAmount > 0
+        ? `¿Eliminar la meta "${goal.name}"? El saldo reservado (${formatAmount(goal.currentAmount, goal.currency)}) vuelve a tu balance disponible.`
+        : `¿Eliminar la meta "${goal.name}"? Esta acción no se puede deshacer.`;
+    if (!window.confirm(warning)) {
       return;
     }
     setDeletingId(goal.id);
     setError(null);
+    setSuccessMessage(null);
     try {
       await goalsApi.deleteGoal(goal.id);
       setGoals((prev) => (prev ? prev.filter((g) => g.id !== goal.id) : prev));
+      setSuccessMessage("Meta eliminada. Saldo actualizado en Resumen.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo eliminar la meta");
     } finally {
@@ -81,6 +89,12 @@ export function Goals() {
       {isLoading && <Loader label="Cargando tus metas..." />}
 
       <ErrorMessage message={error} />
+
+      {successMessage && (
+        <div className="mb-4 animate-rise rounded-lg border border-green-400/30 bg-green-400/10 px-4 py-3 text-sm text-green-400">
+          ✓ {successMessage}
+        </div>
+      )}
 
       {!isLoading && goals && goals.length === 0 && (
         <div className="mt-6 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-8 text-center text-sm text-muted">
