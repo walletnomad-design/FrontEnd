@@ -48,7 +48,7 @@ export function Login() {
   };
 
   return (
-    <AuthShell active="login" title="Bienvenido de nuevo 👋" subtitle="Inicia sesión para continuar manejando tus finanzas.">
+    <AuthShell active="login" title="Bienvenido a NomadWallet" subtitle="Inicia sesión para continuar manejando tus finanzas.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <Input
           label="Correo electrónico"
